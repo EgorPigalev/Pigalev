@@ -8,10 +8,14 @@ import android.view.View;
 
 public class Profile extends AppCompatActivity {
 
+    String str;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+
     }
 
     public  void nextMenu(View view)
@@ -33,4 +37,7 @@ public class Profile extends AppCompatActivity {
     {
         startActivity(new Intent(this, Login.class));
     }
+
+
+
 }
