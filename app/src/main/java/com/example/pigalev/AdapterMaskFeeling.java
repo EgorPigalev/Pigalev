@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 public class AdapterMaskFeeling extends BaseAdapter {
@@ -46,7 +48,6 @@ public class AdapterMaskFeeling extends BaseAdapter {
 
         MaskFeeling maskFeeling = maskList.get(position);
         title.setText(maskFeeling.getTitle());
-        Image.setImageURI(Uri.parse(maskFeeling.getImage()));
 
         return v;
     }

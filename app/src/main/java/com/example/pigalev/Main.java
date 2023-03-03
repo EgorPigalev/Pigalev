@@ -1,6 +1,8 @@
 package com.example.pigalev;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -24,6 +26,9 @@ public class Main extends AppCompatActivity {
     private AdapterMaskQuote pAdapter;
     private List<MaskQuote> listQuote = new ArrayList<>();
 
+    private AdapterMaskFeeling pAdapterFeeling;
+    private List<MaskFeeling> listFeeling = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +38,10 @@ public class Main extends AppCompatActivity {
         pAdapter = new AdapterMaskQuote(Main.this, listQuote);
         ivProducts.setAdapter(pAdapter);
         new GetQuotes().execute();
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        pAdapterFeeling = new AdapterMaskFeeling(Main.this, listFeeling);
+        //recyclerView.setAdapter(pAdapterFeeling);
 
     }
 
