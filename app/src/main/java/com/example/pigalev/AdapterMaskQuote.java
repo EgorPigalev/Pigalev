@@ -1,13 +1,21 @@
 package com.example.pigalev;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 public class AdapterMaskQuote extends BaseAdapter {
@@ -48,18 +56,43 @@ public class AdapterMaskQuote extends BaseAdapter {
         MaskQuote maskQuote = maskList.get(position);
         title.setText(maskQuote.getTitle());
 
-
-        Image.setImageURI(Uri.parse(maskQuote.getImage()));
         if(maskQuote.getImage().toString().equals("null"))
         {
             Image.setImageResource(R.drawable.absence);
         }
         else
         {
-            //Image.setImageURI(Uri.parse(maskQuote.getImage()));
+            new DownloadImageTask((ImageView) Image)
+                    .execute(maskQuote.getImage());
         }
+
         description.setText(maskQuote.getDescription());
         return v;
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
 
 }
