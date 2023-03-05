@@ -56,7 +56,7 @@ public class AdapterMaskQuote extends BaseAdapter {
         MaskQuote maskQuote = maskList.get(position);
         title.setText(maskQuote.getTitle());
 
-        if(maskQuote.getImage().toString().equals("null"))
+        if(maskQuote.getImage().equals("null"))
         {
             Image.setImageResource(R.drawable.absence);
         }

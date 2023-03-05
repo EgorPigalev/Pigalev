@@ -1,54 +1,96 @@
 package com.example.pigalev;
 
 import android.content.Context;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.InputStream;
 import java.util.List;
 
-public class AdapterMaskFeeling extends BaseAdapter {
 
-    private Context mContext;
-    List<MaskFeeling> maskList;
+public class AdapterMaskFeeling extends RecyclerView.Adapter<AdapterMaskFeeling.ViewHolder> {
 
-    public AdapterMaskFeeling(Context mContext, List<MaskFeeling> maskList) {
-        this.mContext = mContext;
-        this.maskList = maskList;
+    private List<MaskFeeling> dataModalArrayList;
+    private Context context;
+
+    public AdapterMaskFeeling(List<MaskFeeling> dataModalArrayList, Context context) {
+        this.dataModalArrayList = dataModalArrayList;
+        this.context = context;
+    }
+
+    @NonNull
+    @Override
+    public AdapterMaskFeeling.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new AdapterMaskFeeling.ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_feeling, parent, false));
     }
 
     @Override
-    public int getCount() {
-        return maskList.size();
+    public void onBindViewHolder(@NonNull AdapterMaskFeeling.ViewHolder holder, int position) {
+        final MaskFeeling modal = dataModalArrayList.get(position);
+        holder.title.setText(modal.getTitle());
+
+        if(modal.getImage().equals("null"))
+        {
+            holder.image.setImageResource(R.drawable.absence);
+        }
+        else
+        {
+            new AdapterMaskFeeling.DownloadImageTask((ImageView) holder.image)
+                    .execute(modal.getImage());
+        }
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
 
     @Override
-    public Object getItem(int i) {
-        return maskList.get(i);
+    public int getItemCount() {
+        return dataModalArrayList.size();
     }
 
-    @Override
-    public long getItemId(int i)
-    {
-        return maskList.get(i).getId();
-    }
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+        private TextView title;
+        private ImageView image;
 
-        View v = View.inflate(mContext,R.layout.item_feeling,null);
-
-        TextView title = v.findViewById(R.id.tvTitle);
-        ImageView Image = v.findViewById(R.id.image);
-
-        MaskFeeling maskFeeling = maskList.get(position);
-        title.setText(maskFeeling.getTitle());
-
-        return v;
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            title = itemView.findViewById(R.id.title);
+            image = itemView.findViewById(R.id.imageFeeling);
+        }
     }
 }
+

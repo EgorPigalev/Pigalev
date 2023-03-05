@@ -26,7 +26,7 @@ public class Main extends AppCompatActivity {
     private AdapterMaskQuote pAdapter;
     private List<MaskQuote> listQuote = new ArrayList<>();
 
-    private AdapterMaskFeeling pAdapterFeeling;
+    private AdapterMaskFeeling dataRVAdapter;
     private List<MaskFeeling> listFeeling = new ArrayList<>();
 
     @Override
@@ -39,9 +39,13 @@ public class Main extends AppCompatActivity {
         ivProducts.setAdapter(pAdapter);
         new GetQuotes().execute();
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        pAdapterFeeling = new AdapterMaskFeeling(Main.this, listFeeling);
-        //recyclerView.setAdapter(pAdapterFeeling);
+        RecyclerView rvFeeling = findViewById(R.id.recyclerView);
+        rvFeeling.setHasFixedSize(true);
+        rvFeeling.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        dataRVAdapter = new AdapterMaskFeeling(listFeeling, Main.this);
+        rvFeeling.setAdapter(dataRVAdapter);
+        new GetFeeling().execute();
 
     }
 
@@ -90,6 +94,60 @@ public class Main extends AppCompatActivity {
                     );
                     listQuote.add(tempProduct);
                     pAdapter.notifyDataSetInvalidated();
+                }
+            }
+            catch (Exception exception)
+            {
+                Toast.makeText(Main.this, "При выводе данных возникла ошибка", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class GetFeeling extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                URL url = new URL("http://mskko2021.mad.hakta.pro/api/feelings");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder result = new StringBuilder();
+                String line = "";
+
+                while ((line = reader.readLine()) != null)
+                {
+                    result.append(line);
+                }
+                return result.toString();
+            }
+            catch (Exception exception)
+            {
+                return null;
+            }
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try
+            {
+                listFeeling.clear();
+                dataRVAdapter.notifyDataSetChanged();
+
+                JSONObject object = new JSONObject(s);
+                JSONArray tempArray  = object.getJSONArray("data");
+
+                for (int i = 0;i<tempArray.length();i++)
+                {
+                    JSONObject productJson = tempArray.getJSONObject(i);
+                    MaskFeeling tempProduct = new MaskFeeling(
+                            productJson.getInt("id"),
+                            productJson.getString("title"),
+                            productJson.getString("image"),
+                            productJson.getInt("position")
+                    );
+                    listFeeling.add(tempProduct);
+                    dataRVAdapter.notifyDataSetChanged();
                 }
             }
             catch (Exception exception)
