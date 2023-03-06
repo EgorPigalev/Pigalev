@@ -1,11 +1,13 @@
 package com.example.pigalev;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -19,7 +21,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main extends AppCompatActivity {
 
@@ -95,6 +100,7 @@ public class Main extends AppCompatActivity {
                     listQuote.add(tempProduct);
                     pAdapter.notifyDataSetInvalidated();
                 }
+
             }
             catch (Exception exception)
             {
@@ -126,6 +132,7 @@ public class Main extends AppCompatActivity {
                 return null;
             }
         }
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
@@ -149,6 +156,8 @@ public class Main extends AppCompatActivity {
                     listFeeling.add(tempProduct);
                     dataRVAdapter.notifyDataSetChanged();
                 }
+                listFeeling.sort(Comparator.comparing(MaskFeeling::getPosition));
+                dataRVAdapter.notifyDataSetChanged();
             }
             catch (Exception exception)
             {
