@@ -19,10 +19,19 @@ public class SplashScreen extends AppCompatActivity {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent mainIntent = new Intent(SplashScreen.this, Onboarding.class);
-                startActivity(mainIntent);
-                finish();
+                if(Login.User != null)
+                {
+                    startActivity(new Intent(SplashScreen.this, Main.class));
+                }
+                else
+                {
+                    Intent mainIntent = new Intent(SplashScreen.this, Onboarding.class);
+                    startActivity(mainIntent);
+                    finish();
+                }
             }
         }, SPLASH_DISPLAY_LENGTH);
     }
+
+
 }

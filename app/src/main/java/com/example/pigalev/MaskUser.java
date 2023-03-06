@@ -1,6 +1,8 @@
 package com.example.pigalev;
 
-public class MaskUser {
+import java.io.Serializable;
+
+public class MaskUser implements Serializable {
     private String id;
     private String email;
     private String nickName;

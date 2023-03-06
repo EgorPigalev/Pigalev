@@ -9,8 +9,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -18,6 +21,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,11 +32,16 @@ import java.util.stream.Collectors;
 
 public class Main extends AppCompatActivity {
 
+    final static String userVariableKey = "USER_VARIABLE";
+
     private AdapterMaskQuote pAdapter;
     private List<MaskQuote> listQuote = new ArrayList<>();
 
     private AdapterMaskFeeling dataRVAdapter;
     private List<MaskFeeling> listFeeling = new ArrayList<>();
+
+    ImageView imageProfile;
+    TextView textHello;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +61,29 @@ public class Main extends AppCompatActivity {
         rvFeeling.setAdapter(dataRVAdapter);
         new GetFeeling().execute();
 
+        imageProfile = findViewById(R.id.ivProfile);
+        new AdapterMaskQuote.DownloadImageTask((ImageView) imageProfile)
+                .execute(Login.User.getAvatar());
+
+        textHello = findViewById(R.id.hello);
+        textHello.setText(textHello.getText().toString() + Login.User.getNickName() + "!");
+
+
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        outState.putString(userVariableKey, "fgfggf");
+        //outState.putSerializable(userVariableKey, (Serializable) Login.User);
+        super.onSaveInstanceState(outState);
+    }
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // получаем объект User в переменную
+        //Login.User = (MaskUser) savedInstanceState.getSerializable(userVariableKey);
+        String str = savedInstanceState.getString(userVariableKey);
+        textHello.setText(str);
     }
 
     private class GetQuotes extends AsyncTask<Void, Void, String> {

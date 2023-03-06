@@ -5,17 +5,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class Profile extends AppCompatActivity {
 
-    String str;
+    ImageView image;
+    TextView tvName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        tvName = findViewById(R.id.tvNameProfile);
+        tvName.setText(Login.User.getNickName());
 
+        image = findViewById(R.id.avatar);
+        new AdapterMaskQuote.DownloadImageTask((ImageView) image)
+                .execute(Login.User.getAvatar());
     }
 
     public  void nextMenu(View view)
