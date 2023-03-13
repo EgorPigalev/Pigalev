@@ -2,22 +2,35 @@ package com.example.pigalev;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 public class Onboarding extends AppCompatActivity {
 
-    final static String userVariableKey = "USER_VARIABLE";
-
+    public static String avatar;
+    public static String nickName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding);
-    }
-    // получение ранее сохраненного состояния
 
+        SharedPreferences prefs = this.getSharedPreferences(
+                "Date", Context.MODE_PRIVATE);
+        if(prefs != null)
+        {
+            if(!prefs.getString("NickName", "").equals(""))
+            {
+                avatar = prefs.getString("Avatar", "");
+                nickName = prefs.getString("NickName", "");
+                startActivity(new Intent(this, Main.class));
+            }
+        }
+    }
 
     public void nextRegistrarion(View v)
     {

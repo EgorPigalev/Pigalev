@@ -2,7 +2,9 @@ package com.example.pigalev;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,11 +21,11 @@ public class Profile extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         tvName = findViewById(R.id.tvNameProfile);
-        tvName.setText(Login.User.getNickName());
+        tvName.setText(Onboarding.nickName);
 
         image = findViewById(R.id.avatar);
         new AdapterMaskQuote.DownloadImageTask((ImageView) image)
-                .execute(Login.User.getAvatar());
+                .execute(Onboarding.avatar);
     }
 
     public  void nextMenu(View view)
@@ -43,9 +45,11 @@ public class Profile extends AppCompatActivity {
 
     public void nextLogin(View view)
     {
+        SharedPreferences prefs = getSharedPreferences( // Сохранение данных
+                "Date", Context.MODE_PRIVATE);
+        prefs.edit().putString("Avatar", "").apply();
+        prefs.edit().putString("NickName", "").apply();
+
         startActivity(new Intent(this, Login.class));
     }
-
-
-
 }

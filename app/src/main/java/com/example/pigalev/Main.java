@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,8 +33,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Main extends AppCompatActivity {
-
-    final static String userVariableKey = "USER_VARIABLE";
 
     private AdapterMaskQuote pAdapter;
     private List<MaskQuote> listQuote = new ArrayList<>();
@@ -63,13 +63,13 @@ public class Main extends AppCompatActivity {
 
         imageProfile = findViewById(R.id.ivProfile);
         new AdapterMaskQuote.DownloadImageTask((ImageView) imageProfile)
-                .execute(Login.User.getAvatar());
+                .execute(Onboarding.avatar);
 
         textHello = findViewById(R.id.hello);
-        textHello.setText(textHello.getText().toString() + Login.User.getNickName() + "!");
-
-
+        textHello.setText(textHello.getText().toString() + Onboarding.nickName + "!");
     }
+
+    /*
     @Override
     protected void onSaveInstanceState(Bundle outState) {
 
@@ -85,6 +85,7 @@ public class Main extends AppCompatActivity {
         String str = savedInstanceState.getString(userVariableKey);
         textHello.setText(str);
     }
+     */
 
     private class GetQuotes extends AsyncTask<Void, Void, String> {
 

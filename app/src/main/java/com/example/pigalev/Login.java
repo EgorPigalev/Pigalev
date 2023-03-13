@@ -2,7 +2,9 @@ package com.example.pigalev;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -19,7 +21,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Login extends AppCompatActivity {
 
-    public static MaskUser User;
     EditText etEmail, etPassword;
 
     @Override
@@ -28,6 +29,14 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
+
+        SharedPreferences prefs = this.getSharedPreferences(
+                "Date", Context.MODE_PRIVATE);
+        if(prefs != null)
+        {
+            etEmail.setText(prefs.getString("Email", ""));
+            etPassword.requestFocus();
+        }
     }
 
     public void nextMain(View v)
@@ -75,7 +84,14 @@ public class Login extends AppCompatActivity {
                 {
                     if(response.body().getToken() != null)
                     {
-                        User = response.body();
+                        SharedPreferences prefs = getSharedPreferences( // Сохранение данных
+                                "Date", Context.MODE_PRIVATE);
+                        prefs.edit().putString("Email", "" + email).apply();
+                        prefs.edit().putString("Avatar", "" + response.body().getAvatar()).apply();
+                        prefs.edit().putString("NickName", "" + response.body().getNickName()).apply();
+
+                        Onboarding.avatar = response.body().getAvatar();
+                        Onboarding.nickName = response.body().getNickName();
                         Intent intent = new Intent(Login.this, Main.class);
                         Bundle b = new Bundle();
                         intent.putExtras(b);
