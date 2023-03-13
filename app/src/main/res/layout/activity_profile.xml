@@ -60,6 +60,7 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/dateUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/header"
@@ -95,6 +96,15 @@
                 android:fontFamily="@font/alegreya"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/btnAddImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Добавить изображение"
+            app:layout_constraintTop_toBottomOf="@+id/dateUser"
+            app:layout_constraintStart_toStartOf="parent"
+            android:onClick="addImage"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom"
