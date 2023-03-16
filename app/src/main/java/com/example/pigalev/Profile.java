@@ -20,6 +20,9 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -47,6 +50,8 @@ public class Profile extends AppCompatActivity {
     private AdapterMaskProfileImage pAdapter;
     private List<MaskProfileImage> list = new ArrayList<>();
 
+    public static MaskProfileImage maskProfileImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,16 +64,24 @@ public class Profile extends AppCompatActivity {
         new AdapterMaskQuote.DownloadImageTask((ImageView) image)
                 .execute(Onboarding.avatar);
 
-
-
-        ListView ivProducts = findViewById(R.id.lvImageProfile);
+        GridView gvImage = findViewById(R.id.lvImageProfile);
         pAdapter = new AdapterMaskProfileImage(Profile.this, list);
-        ivProducts.setAdapter(pAdapter);
+        gvImage.setAdapter(pAdapter);
         GetImageProfile();
+
+        gvImage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                maskProfileImage = list.get(i);
+                startActivity(new Intent(Profile.this, Photo.class));
+            }
+        });
     }
 
     private void GetImageProfile()
     {
+        list.clear();
+        pAdapter.notifyDataSetInvalidated();
         String path = getApplicationInfo().dataDir + "/MyFiles";
         File directory = new File(path);
         File[] files = directory.listFiles();
@@ -85,6 +98,17 @@ public class Profile extends AppCompatActivity {
             list.add(tempProduct);
             pAdapter.notifyDataSetInvalidated();
         }
+        /*
+        MaskProfileImage tempProduct = new MaskProfileImage(
+                j,
+                null,
+                files[files.length-1],
+                "null"
+        );
+        list.add(tempProduct);
+        pAdapter.notifyDataSetInvalidated();
+
+         */
     }
 
     public static final String getFullTime(final long timeInMillis)
