@@ -69,24 +69,6 @@ public class Main extends AppCompatActivity {
         textHello.setText(textHello.getText().toString() + Onboarding.nickName + "!");
     }
 
-    /*
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-
-        outState.putString(userVariableKey, "fgfggf");
-        //outState.putSerializable(userVariableKey, (Serializable) Login.User);
-        super.onSaveInstanceState(outState);
-    }
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        // получаем объект User в переменную
-        //Login.User = (MaskUser) savedInstanceState.getSerializable(userVariableKey);
-        String str = savedInstanceState.getString(userVariableKey);
-        textHello.setText(str);
-    }
-     */
-
     private class GetQuotes extends AsyncTask<Void, Void, String> {
 
         @Override

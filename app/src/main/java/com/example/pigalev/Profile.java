@@ -12,13 +12,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +30,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 
 public class Profile extends AppCompatActivity {
 
@@ -34,6 +43,9 @@ public class Profile extends AppCompatActivity {
     TextView tvName;
 
     OutputStream outputStream;
+
+    private AdapterMaskProfileImage pAdapter;
+    private List<MaskProfileImage> list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +59,41 @@ public class Profile extends AppCompatActivity {
         new AdapterMaskQuote.DownloadImageTask((ImageView) image)
                 .execute(Onboarding.avatar);
 
+
+
+        ListView ivProducts = findViewById(R.id.lvImageProfile);
+        pAdapter = new AdapterMaskProfileImage(Profile.this, list);
+        ivProducts.setAdapter(pAdapter);
+        GetImageProfile();
+    }
+
+    private void GetImageProfile()
+    {
+        String path = getApplicationInfo().dataDir + "/MyFiles";
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        int j = 0;
+        for (int i = 0; i < files.length; i++)
+        {
+            Long last = files[i].lastModified();
+            MaskProfileImage tempProduct = new MaskProfileImage(
+                    j,
+                    files[i].getAbsolutePath(),
+                    files[i],
+                    getFullTime(last)
+            );
+            list.add(tempProduct);
+            pAdapter.notifyDataSetInvalidated();
+        }
+    }
+
+    public static final String getFullTime(final long timeInMillis)
+    {
+        final SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+        final Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(timeInMillis);
+        c.setTimeZone(TimeZone.getDefault());
+        return format.format(c.getTime());
     }
 
     public  void nextMenu(View view)
@@ -97,8 +144,7 @@ public class Profile extends AppCompatActivity {
                         {
                             e.printStackTrace();
                         }
-                        File filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                        File dir = new File(filepath.getAbsolutePath() + "/MyFiles/");
+                        File dir = new File(getApplicationInfo().dataDir + "/MyFiles/");
                         dir.mkdirs();
                         File file = new File(dir, System.currentTimeMillis() + ".jpg");
                         try {
@@ -113,6 +159,7 @@ public class Profile extends AppCompatActivity {
                             e.printStackTrace();
                             Toast.makeText(Profile.this, "При сохранение изображения возникла ошибка!", Toast.LENGTH_LONG).show();
                         }
+                        GetImageProfile();
                     }
                 }
             });
