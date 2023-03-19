@@ -3,15 +3,12 @@ package com.example.pigalev;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.InputStream;
 import java.util.List;
 
 public class AdapterMaskProfileImage extends BaseAdapter
@@ -40,23 +37,29 @@ public class AdapterMaskProfileImage extends BaseAdapter
         return maskList.get(i).getId();
     }
 
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View v = View.inflate(mContext,R.layout.item_profile_image,null);
-
-        ImageView Image = v.findViewById(R.id.image);
-        TextView dateCreat = v.findViewById(R.id.dateCreat);
-
         MaskProfileImage maskProfileImage  = maskList.get(position);
-
-        if(maskProfileImage.getImageProfile().exists()){
-
-            Bitmap myBitmap = BitmapFactory.decodeFile(maskProfileImage.getImageProfile().getAbsolutePath());
-            Image.setImageBitmap(myBitmap);
+        View v = null;
+        if(maskProfileImage.getImageProfile() == null) // Если картинка не указана, то это последний элемент
+        {
+            v = View.inflate(mContext,R.layout.item_profile_image_add,null); // Выводится форма с кнопкой
         }
-        dateCreat.setText(maskProfileImage.getData());
+        else
+        {
+            v = View.inflate(mContext,R.layout.item_profile_image,null); // Вывод стандартной формы
 
+            ImageView Image = v.findViewById(R.id.image);
+            TextView dateCreat = v.findViewById(R.id.dateCreat);
+
+            if(maskProfileImage.getImageProfile().exists()){
+                Bitmap myBitmap = BitmapFactory.decodeFile(maskProfileImage.getImageProfile().getAbsolutePath());
+                Image.setImageBitmap(myBitmap);
+            }
+            dateCreat.setText(maskProfileImage.getData());
+        }
         return v;
     }
 }

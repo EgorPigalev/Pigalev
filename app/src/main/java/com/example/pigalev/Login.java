@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Login extends AppCompatActivity {
 
-    EditText etEmail, etPassword;
+    EditText etEmail, etPassword; // Почта и пароль
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,23 +31,23 @@ public class Login extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
 
         SharedPreferences prefs = this.getSharedPreferences(
-                "Date", Context.MODE_PRIVATE);
+                "Date", Context.MODE_PRIVATE); // Получение данных о пользователе
         if(prefs != null)
         {
-            etEmail.setText(prefs.getString("Email", ""));
+            etEmail.setText(prefs.getString("Email", "")); // Заполнение почты ранее входившего пользователя
             etPassword.requestFocus();
         }
     }
 
     public void nextMain(View v)
     {
-        if(etEmail.getText().toString().equals("") || etPassword.getText().toString().equals(""))
+        if(etEmail.getText().toString().equals("") || etPassword.getText().toString().equals("")) // Проверка заполненности полей
         {
             Toast.makeText(Login.this, "Все поля должны быть заполнены!", Toast.LENGTH_SHORT).show();
         }
         else
         {
-            Pattern p = Pattern.compile("@", Pattern.CASE_INSENSITIVE);
+            Pattern p = Pattern.compile("@", Pattern.CASE_INSENSITIVE); // Регулярное выражение для проверки наличия символа @ в почте
             Matcher m = p.matcher(etEmail.getText().toString());
             boolean b = m.find();
             if(b)
@@ -61,7 +61,7 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    private void callLogin()
+    private void callLogin() // Процесс проверки пользователя
     {
         String email = String.valueOf(etEmail.getText());
         String password = String.valueOf(etPassword.getText());
@@ -92,6 +92,7 @@ public class Login extends AppCompatActivity {
 
                         Onboarding.avatar = response.body().getAvatar();
                         Onboarding.nickName = response.body().getNickName();
+
                         Intent intent = new Intent(Login.this, Main.class);
                         Bundle b = new Bundle();
                         intent.putExtras(b);

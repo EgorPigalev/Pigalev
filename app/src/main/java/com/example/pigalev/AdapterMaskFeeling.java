@@ -83,8 +83,8 @@ public class AdapterMaskFeeling extends RecyclerView.Adapter<AdapterMaskFeeling.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView title;
-        private ImageView image;
+        private TextView title; // Название ощущения
+        private ImageView image; // Картинка ощущения
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

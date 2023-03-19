@@ -48,9 +48,9 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView ivProducts = findViewById(R.id.lvQuotes);
+        ListView lvQuotes = findViewById(R.id.lvQuotes);
         pAdapter = new AdapterMaskQuote(Main.this, listQuote);
-        ivProducts.setAdapter(pAdapter);
+        lvQuotes.setAdapter(pAdapter);
         new GetQuotes().execute();
 
         RecyclerView rvFeeling = findViewById(R.id.recyclerView);
@@ -63,13 +63,13 @@ public class Main extends AppCompatActivity {
 
         imageProfile = findViewById(R.id.ivProfile);
         new AdapterMaskQuote.DownloadImageTask((ImageView) imageProfile)
-                .execute(Onboarding.avatar);
+                .execute(Onboarding.avatar); // Заполнение фото пользователя
 
         textHello = findViewById(R.id.hello);
-        textHello.setText(textHello.getText().toString() + Onboarding.nickName + "!");
+        textHello.setText(textHello.getText().toString() + Onboarding.nickName + "!"); // Заполнение имени пользователя
     }
 
-    private class GetQuotes extends AsyncTask<Void, Void, String> {
+    private class GetQuotes extends AsyncTask<Void, Void, String> { // Вывод списка цитат
 
         @Override
         protected String doInBackground(Void... voids) {
@@ -124,7 +124,7 @@ public class Main extends AppCompatActivity {
         }
     }
 
-    private class GetFeeling extends AsyncTask<Void, Void, String> {
+    private class GetFeeling extends AsyncTask<Void, Void, String> { // Вывод списка ощущений
 
         @Override
         protected String doInBackground(Void... voids) {

@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 public class Onboarding extends AppCompatActivity {
 
-    public static String avatar;
-    public static String nickName;
+    public static String avatar; // Фотография пользователя, который уже вошёл в систему
+    public static String nickName; // Имя пользователя, который уже вошёл в систему
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +20,10 @@ public class Onboarding extends AppCompatActivity {
         setContentView(R.layout.activity_onboarding);
 
         SharedPreferences prefs = this.getSharedPreferences(
-                "Date", Context.MODE_PRIVATE);
+                "Date", Context.MODE_PRIVATE); // Получение данных о пользователе
         if(prefs != null)
         {
-            if(!prefs.getString("NickName", "").equals(""))
+            if(!prefs.getString("NickName", "").equals("")) // Если пользователь уже входил, то получаем данные и пропускаем авторизацию
             {
                 avatar = prefs.getString("Avatar", "");
                 nickName = prefs.getString("NickName", "");

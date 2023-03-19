@@ -7,50 +7,41 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
 public class Profile extends AppCompatActivity {
 
-    ImageView image;
-    TextView tvName;
+    ImageView image; // Иконка пользователя
+    TextView tvName; // Имя пользлователя
 
     OutputStream outputStream;
 
     private AdapterMaskProfileImage pAdapter;
     private List<MaskProfileImage> list = new ArrayList<>();
 
-    public static MaskProfileImage maskProfileImage;
+    public static MaskProfileImage maskProfileImage; // Картинка, на которую нажал пользователь
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +53,7 @@ public class Profile extends AppCompatActivity {
 
         image = findViewById(R.id.avatar);
         new AdapterMaskQuote.DownloadImageTask((ImageView) image)
-                .execute(Onboarding.avatar);
+                .execute(Onboarding.avatar); // Заполнение иконки пользователя
 
         GridView gvImage = findViewById(R.id.lvImageProfile);
         pAdapter = new AdapterMaskProfileImage(Profile.this, list);
@@ -72,14 +63,24 @@ public class Profile extends AppCompatActivity {
         gvImage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                maskProfileImage = list.get(i);
-                startActivity(new Intent(Profile.this, Photo.class));
+                MaskProfileImage mask = list.get(i);
+                if(mask.getImageProfile() == null) // Если нажали на последний элемент, то это кнопка добавления фотографии
+                {
+                    addImage();
+                }
+                else
+                {
+                    maskProfileImage = list.get(i);
+                    startActivity(new Intent(Profile.this, Photo.class));
+                }
             }
         });
     }
 
-    private void GetImageProfile()
+    private void GetImageProfile() // Заполнение картинок из папки
     {
+        File dir = new File(getApplicationInfo().dataDir + "/MyFiles/");
+        dir.mkdirs();
         list.clear();
         pAdapter.notifyDataSetInvalidated();
         String path = getApplicationInfo().dataDir + "/MyFiles";
@@ -98,20 +99,17 @@ public class Profile extends AppCompatActivity {
             list.add(tempProduct);
             pAdapter.notifyDataSetInvalidated();
         }
-        /*
-        MaskProfileImage tempProduct = new MaskProfileImage(
+        MaskProfileImage tempProduct = new MaskProfileImage( // Последним элементом будет кнопка
                 j,
                 null,
-                files[files.length-1],
+                null,
                 "null"
         );
         list.add(tempProduct);
         pAdapter.notifyDataSetInvalidated();
-
-         */
     }
 
-    public static final String getFullTime(final long timeInMillis)
+    public static final String getFullTime(final long timeInMillis) // Преобразование из милисикунд в формат часы:минуты
     {
         final SimpleDateFormat format = new SimpleDateFormat("HH:mm");
         final Calendar c = Calendar.getInstance();
@@ -145,7 +143,7 @@ public class Profile extends AppCompatActivity {
         startActivity(new Intent(this, Login.class));
     }
 
-    public void addImage(View view)
+    public void addImage() // Добавление фотографии
     {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
@@ -169,10 +167,10 @@ public class Profile extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         File dir = new File(getApplicationInfo().dataDir + "/MyFiles/");
-                        dir.mkdirs();
-                        File file = new File(dir, System.currentTimeMillis() + ".jpg");
+                        dir.mkdirs(); // Проверка наличия католога и его создание
+                        File file = new File(dir, System.currentTimeMillis() + ".jpg"); // Создание файла
                         try {
-                            outputStream = new FileOutputStream(file);
+                            outputStream = new FileOutputStream(file); // Отправка данных в файл на диске
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
                             outputStream.flush();
                             outputStream.close();
